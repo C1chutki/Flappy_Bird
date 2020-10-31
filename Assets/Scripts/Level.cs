@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeMonkey;
+using CodeMonkey.Utils;
 
 public class Level : MonoBehaviour
 {
@@ -25,6 +27,7 @@ public class Level : MonoBehaviour
     private float pipeSpawnTimer;
     private float pipeSpawnTimerMax;
     private float gapSize;
+    private State state;
 
     public enum Difficulty
     {
@@ -34,26 +37,50 @@ public class Level : MonoBehaviour
         Impossible,
     }
 
+    private enum State
+    {
+        WaitingToStart,
+        Playing,
+        BirdDead,
+    }
+
     private void Awake()
     {
         instance = this;
         pipeList = new List<Pipe>();
         pipeSpawnTimerMax = 1f;
         SetDifficulty(Difficulty.Easy);
+        state = State.WaitingToStart;
     }
 
 
     private void Start()
     {
-        //CreatePipe(50f,0f, true);
-        //CreatePipe(50f,0f, false);
-        //CreateGapPipes(40f, 30f, 20f);
+        Bird.GetInstance().OnDied += Bird_OnDied;
+        Bird.GetInstance().OnStartedPlaying += Bird_OnStartedPlaying;
+    }
+
+    private void Bird_OnStartedPlaying(object sender, System.EventArgs e)
+    {
+        state = State.Playing;
+    }
+
+    private void Bird_OnDied(object sender, System.EventArgs e)
+    {
+        //CMDebug.TextPopupMouse("Dead!");
+        state = State.BirdDead;
+
+        FunctionTimer.Create(() =>{
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        }, 1f);
     }
 
     private void Update()
     {
+        if (state == State.Playing) { 
         HandlePipeMovement();
         HandlePipeSpawning();
+        }
     }
     private void HandlePipeSpawning()
     {
@@ -98,7 +125,6 @@ public class Level : MonoBehaviour
             }
         }  
     }
-
 
     private void SetDifficulty(Difficulty difficulty)
     {
