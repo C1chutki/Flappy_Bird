@@ -6,7 +6,6 @@ using CodeMonkey.Utils;
 
 public class Level : MonoBehaviour
 {
-
     private const float CAMERA_ORTHO_SIZE = 50f;
     private const float PIPE_WIDTH = 8f;
     private const float PIPE_HEAD_HEIGHT = 3f;
@@ -15,19 +14,21 @@ public class Level : MonoBehaviour
     private const float PIPE_SPAWN_X_POSITION = +110f;
     private const float BIRD_X_POSITION = 0f;
 
+    private List<Pipe> pipeList;
+    private int pipesPassedCount;
+    private int pipesSpawned;
+
+    private float pipeSpawnTimer;
+    private float pipeSpawnTimerMax;
+    private float gapSize;
+
+    private State state;
+
     private static Level instance;
     public static Level GetInstance()
     {
         return instance;
     }
-
-    private List<Pipe> pipeList;
-    private int pipesPassedCount;
-    private int pipesSpawned;
-    private float pipeSpawnTimer;
-    private float pipeSpawnTimerMax;
-    private float gapSize;
-    private State state;
 
     public enum Difficulty
     {
@@ -53,7 +54,6 @@ public class Level : MonoBehaviour
         state = State.WaitingToStart;
     }
 
-
     private void Start()
     {
         Bird.GetInstance().OnDied += Bird_OnDied;
@@ -67,12 +67,7 @@ public class Level : MonoBehaviour
 
     private void Bird_OnDied(object sender, System.EventArgs e)
     {
-        //CMDebug.TextPopupMouse("Dead!");
         state = State.BirdDead;
-
-        FunctionTimer.Create(() =>{
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
-        }, 1f);
     }
 
     private void Update()
@@ -162,7 +157,6 @@ public class Level : MonoBehaviour
 
     }
     
-
     private void CreateGapPipes(float gapY, float gapSize, float xPosition)
     {
         CreatePipe(gapY - gapSize * .5f, xPosition, true);
@@ -171,7 +165,6 @@ public class Level : MonoBehaviour
         SetDifficulty(GetDifficulty());
     }
 
-    //Creat pipe
     private void CreatePipe(float height, float xPosition, bool createBottom)
     {
 
@@ -218,14 +211,12 @@ public class Level : MonoBehaviour
     {
         return pipesSpawned;
     }
+
     public int GetPipesPassedCount()
     {
         return pipesPassedCount/2;
     }
 
-
-
-    // Represents a single pipe
     private class Pipe {
         private Transform pipeHeadTransform;
         private Transform pipeBodyTransform;
