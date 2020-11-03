@@ -10,8 +10,8 @@ public class Level : MonoBehaviour
     private const float PIPE_WIDTH = 8f;
     private const float PIPE_HEAD_HEIGHT = 3f;
     private const float PIPE_MOVE_SPEED = 30f;
-    private const float PIPE_DESTROY_X_POSITION = -145f;
-    private const float PIPE_SPAWN_X_POSITION = +140f;
+    private const float PIPE_DESTROY_X_POSITION = -125f;
+    private const float PIPE_SPAWN_X_POSITION = +115f;
     private const float BIRD_X_POSITION = 0f;
 
     private List<Pipe> pipeList;
@@ -110,6 +110,7 @@ public class Level : MonoBehaviour
             {
                 //pipes passed bird
                 pipesPassedCount++;
+                SoundMenager.PlaySound(SoundMenager.Sound.Score);
             }
             if (pipe.GetXPosition() < PIPE_DESTROY_X_POSITION)
             {
