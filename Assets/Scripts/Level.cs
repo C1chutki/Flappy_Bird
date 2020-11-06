@@ -7,14 +7,17 @@ using CodeMonkey.Utils;
 public class Level : MonoBehaviour
 {
     private const float CAMERA_ORTHO_SIZE = 50f;
-    private const float PIPE_WIDTH = 8f;
+    private const float PIPE_WIDTH = 10.4f;
     private const float PIPE_HEAD_HEIGHT = 3f;
     private const float PIPE_MOVE_SPEED = 30f;
     private const float PIPE_DESTROY_X_POSITION = -125f;
     private const float PIPE_SPAWN_X_POSITION = +115f;
+    private const float GROUND_DESTROY_X_POSITION = -200f;
+    private const float GROUND_SPAWN_X_POSITION = +115f;
     private const float BIRD_X_POSITION = 0f;
 
     private List<Pipe> pipeList;
+    private List<Transform> GroundList;
     private int pipesPassedCount;
     private int pipesSpawned;
 
@@ -48,6 +51,7 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        SpawnInitialGround();
         pipeList = new List<Pipe>();
         pipeSpawnTimerMax = 1f;
         SetDifficulty(Difficulty.Easy);
@@ -75,8 +79,49 @@ public class Level : MonoBehaviour
         if (state == State.Playing) { 
         HandlePipeMovement();
         HandlePipeSpawning();
+        HandleGround();
         }
     }
+
+    private void SpawnInitialGround()
+    {
+        GroundList = new List<Transform>();
+        Transform groundTransform;
+        float groundY = -49f;
+        float groundWidth = 192f;
+        groundTransform = Instantiate(GameAssets.GetInstance().pfGround, new Vector3(0, groundY, 0), Quaternion.identity);
+        GroundList.Add(groundTransform);
+        groundTransform = Instantiate(GameAssets.GetInstance().pfGround, new Vector3(groundWidth, groundY, 0), Quaternion.identity);
+        GroundList.Add(groundTransform);
+        groundTransform = Instantiate(GameAssets.GetInstance().pfGround, new Vector3(groundWidth * 2f, groundY, 0), Quaternion.identity);
+        GroundList.Add(groundTransform);
+    }
+
+    private void HandleGround()
+    {
+        foreach (Transform groundTransform in GroundList)
+        {
+            groundTransform.position += new Vector3(-1, 0, 0) * PIPE_MOVE_SPEED * Time.deltaTime;
+
+            if (groundTransform.position.x < GROUND_DESTROY_X_POSITION)
+            {
+                // Ground passed the left sied, relocate on right side
+                // find right most X position
+                float rightMostXPosition = -100f;
+                for (int i = 0; i < GroundList.Count; i++)
+                {
+                    if(GroundList[i].position.x > rightMostXPosition) {
+                        rightMostXPosition = GroundList[i].position.x;
+                    }
+                }
+                // Place ground on the right most position
+                float groundWidth = 192f;
+                groundTransform.position = new Vector3(rightMostXPosition + groundWidth, groundTransform.position.y, groundTransform.position.z);
+            }
+        }
+    }
+
+    
     private void HandlePipeSpawning()
     {
         pipeSpawnTimer -= Time.deltaTime;
