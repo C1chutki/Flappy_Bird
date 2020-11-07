@@ -173,22 +173,22 @@ public class Level : MonoBehaviour
         {
             case Difficulty.Easy:
                 gapSize = 50f;
-                pipeSpawnTimerMax = 1.2f;
+                pipeSpawnTimerMax = 1.4f;
                 break;
                 
             case Difficulty.Medium:
                 gapSize = 40f;
-                pipeSpawnTimerMax = 1.1f;
+                pipeSpawnTimerMax = 1.3f;
                 break;
                 
             case Difficulty.Hard:
                 gapSize = 33f;
-                pipeSpawnTimerMax = 1f;
+                pipeSpawnTimerMax = 1.2f;
                 break;
                 
             case Difficulty.Impossible:
                 gapSize = 24f;
-                pipeSpawnTimerMax = 0.9f;
+                pipeSpawnTimerMax = 1f;
                 break;
 
         }
@@ -224,6 +224,7 @@ public class Level : MonoBehaviour
         else
         {
             pipeHeadYPosition = +CAMERA_ORTHO_SIZE - height + PIPE_HEAD_HEIGHT * .5f;
+            pipeHead.transform.localScale = new Vector3(1, -1, 1);
         }
         pipeHead.position = new Vector3(xPosition, pipeHeadYPosition);
 
