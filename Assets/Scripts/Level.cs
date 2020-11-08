@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using CodeMonkey;
-using CodeMonkey.Utils;
 
 public class Level : MonoBehaviour
 {
@@ -13,7 +10,6 @@ public class Level : MonoBehaviour
     private const float PIPE_DESTROY_X_POSITION = -125f;
     private const float PIPE_SPAWN_X_POSITION = +115f;
     private const float GROUND_DESTROY_X_POSITION = -200f;
-    private const float GROUND_SPAWN_X_POSITION = +115f;
     private const float BIRD_X_POSITION = 0f;
 
     private List<Pipe> pipeList;

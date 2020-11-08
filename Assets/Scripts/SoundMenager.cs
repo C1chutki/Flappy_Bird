@@ -1,7 +1,4 @@
-﻿using CodeMonkey.Utils;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using CodeMonkey.Utils;
 
 public static class SoundMenager
